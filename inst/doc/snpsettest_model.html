@@ -15,6 +15,35 @@
 
 <title>A set-based association test in snpsettest</title>
 
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+<script>// Hide empty <a> tag within highlighted CodeBlock for screen reader accessibility (see https://github.com/jgm/pandoc/issues/6352#issuecomment-626106786) -->
+// v0.0.1
+// Written by JooYoung Seo (jooyoung@psu.edu) and Atsushi Yasumoto on June 1st, 2020.
+
+document.addEventListener('DOMContentLoaded', function() {
+  const codeList = document.getElementsByClassName("sourceCode");
+  for (var i = 0; i < codeList.length; i++) {
+    var linkList = codeList[i].getElementsByTagName('a');
+    for (var j = 0; j < linkList.length; j++) {
+      if (linkList[j].innerHTML === "") {
+        linkList[j].setAttribute('aria-hidden', 'true');
+      }
+    }
+  }
+});
+</script>
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -24,6 +53,7 @@
   div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
   ul.task-list{list-style: none;}
     </style>
+
 
 
 
@@ -224,11 +254,11 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 <h1 class="title toc-ignore">A set-based association test in snpsettest</h1>
 <h4 class="author">Jaehyun Joo</h4>
-<h4 class="date">17 January, 2022</h4>
+<h4 class="date">09 September, 2023</h4>
 
 
 
-<p>For set-based association tests, the <strong>snpsettest</strong> package employed the statistical model described in VEGAS (<strong>ve</strong>rsatile <strong>g</strong>ene-based <strong>a</strong>ssociation <strong>s</strong>tudy) [1], which takes as input variant-level p values and reference likage disequilibrium (LD) data. Briefly, the test statistics is defined as the sum of squared variant-level Z-statistics. Letting a set of <span class="math inline">\(Z\)</span> scores of individual SNPs <span class="math inline">\(z_i\)</span> for <span class="math inline">\(i \in 1:p\)</span> within a set <span class="math inline">\(s\)</span>, the test statistic <span class="math inline">\(Q_s\)</span> is</p>
+<p>For set-based association tests, the <strong>snpsettest</strong> package employed the statistical model described in VEGAS (<strong>ve</strong>rsatile <strong>g</strong>ene-based <strong>a</strong>ssociation <strong>s</strong>tudy) [1], which takes as input variant-level p values and reference linkage disequilibrium (LD) data. Briefly, the test statistics is defined as the sum of squared variant-level Z-statistics. Letting a set of <span class="math inline">\(Z\)</span> scores of individual SNPs <span class="math inline">\(z_i\)</span> for <span class="math inline">\(i \in 1:p\)</span> within a set <span class="math inline">\(s\)</span>, the test statistic <span class="math inline">\(Q_s\)</span> is</p>
 <p><span class="math display">\[Q_s = \sum_{i=1}^p z_i^2\]</span></p>
 <p>Here, <span class="math inline">\(Z = \{z_1,...,z_p\}&#39;\)</span> is a vector of multivariate normal distribution with a mean vector <span class="math inline">\(\mu\)</span> and a covariance matrix <span class="math inline">\(\Sigma\)</span> in which <span class="math inline">\(\Sigma\)</span> represents LD among SNPs. To test a set-level association, we need to evaluate the distribution of <span class="math inline">\(Q_s\)</span>. VEGAS uses Monte Carlo simulations to approximate the distribution of <span class="math inline">\(Q_s\)</span> (directly simulate <span class="math inline">\(Z\)</span> from multivariate normal distribution), and thus, compute a set-level p value. However, its use is hampered in practice when set-based p values are very small because the number of simulations required to obtain such p values is be very large. The <strong>snpsettest</strong> package utilizes a different approach to evaluate the distribution of <span class="math inline">\(Q_s\)</span> more efficiently.</p>
 <p>Let <span class="math inline">\(Y = \Sigma^{-\frac12}Z\)</span> (instead of <span class="math inline">\(\Sigma^{-\frac12}\)</span>, we could use any decomposition that satisfies <span class="math inline">\(\Sigma = AA&#39;\)</span> with a <span class="math inline">\(p \times p\)</span> non-singular matrix <span class="math inline">\(A\)</span> such that <span class="math inline">\(Y = A^{-1}Z\)</span>). Then,</p>
